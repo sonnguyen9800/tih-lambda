@@ -1,0 +1,41 @@
+service: tih-lambda
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: ap-southeast-1
+        
+functions:
+  getEvents:
+    handler: handler.fetchEvent
+    events:
+      - http:
+          path: getevents
+          method: get
+          cors: true
+  getContent:
+    handler: handler.fetchWikiContent
+    events:
+      - http:
+          path: getcontent
+          method: post
+          cors: true
+  getImage:
+    handler: handler.fetchWikiImage
+    events:
+      - http:
+          path: getimage
+          method: post
+          cors: true
+resources:
+  Resources:
+    GatewayResponseDefault4XX:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: DEFAULT_4XX
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'          
+        
