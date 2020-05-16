@@ -2,7 +2,7 @@
 
 const fetch = require('node-fetch');
 
- async function fetchEvent(event) {
+async function fetchEvent(event, context, callback) {
     // TODO implement    
     const month = new Date().getMonth();
     const day = new Date().getDay();    
@@ -56,24 +56,34 @@ const fetch = require('node-fetch');
         }
         // get random item from the result:
          item = data[Math.floor(Math.random()*data.length)];
+
+	 return callback(null,  {
+	     statusCode: 200,			     
+	     headers: {
+		 'Access-Control-Allow-Origin': '*',
+		 'Access-Control-Allow-Credentials': true,
+	     },	 
+	     body: JSON.stringify({
+		 event : item,
+		 type : type
+	     })    
+	 });
     
     } catch (e) {
 	console.log(e);
-        item = null;
+        return callback(null,  {
+	     statusCode: 200,			     
+	     headers: {
+		 'Access-Control-Allow-Origin': '*',
+		 'Access-Control-Allow-Credentials': true,
+	     },	 
+	     body: JSON.stringify({
+		 event : null,
+		 type : type
+	     })    
+	});
     }     
-     const response = {
-         statusCode: 200,
-	 headers : {
-	  //  "Access-Control-Allow-Credentials": true,
-	    "Access-Control-Allow-Origin": "*",
-	    "Content-Type": "application/json"
-	},
-         body: {
-	     event : item,
-	     type : type
-	 }
-     };    
-    return response;
+   
 };
 
 
@@ -99,12 +109,11 @@ async function fetchWikiContent(event, context, callback) {
 
     return callback(null, {
 	statusCode : 200,
-	headers : {
-	   // "Access-Control-Allow-Credentials": true,
-	    "Access-Control-Allow-Origin": "*",
-	    "Content-Type": "application/json"
-
-	},
+	 headers: {
+	     'Access-Control-Allow-Origin': '*',
+	     'Access-Control-Allow-Credentials': true,
+	 },
+	
 	body : JSON.stringify({	    
 	    result : result
 	})	
@@ -128,12 +137,12 @@ async function fetchWikiImage(event, context, callback){
 
     return callback(null, {
 	statusCode : 200,
-	headers : {
-//	    "Access-Control-Allow-Credentials": true,
-	    "Access-Control-Allow-Origin": "*",
-	    "Content-Type": "application/json"
 
-	},
+	 headers: {
+	     'Access-Control-Allow-Origin': '*',
+	     'Access-Control-Allow-Credentials': true,
+	 },
+	
 	body : JSON.stringify({	    
 	    imgSrc : result.thumbnail.source,
 	    caption : result.pageimage
