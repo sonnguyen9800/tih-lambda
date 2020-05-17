@@ -11,7 +11,7 @@ functions:
     events:
       - http:
           path: getevents
-          method: get
+          method: post
           cors: true
   getContent:
     handler: handler.fetchWikiContent

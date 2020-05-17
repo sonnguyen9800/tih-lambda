@@ -3,9 +3,11 @@
 const fetch = require('node-fetch');
 
 async function fetchEvent(event, context, callback) {
-    // TODO implement    
-    const month = new Date().getMonth();
-    const day = new Date().getDay();    
+
+    let body = JSON.parse(event.body);
+    const month = body.month;
+    const day = body.day;
+    
     const type = Math.floor(Math.random()*3 + 1);
     let api = "";
     switch (type) {
@@ -28,7 +30,7 @@ async function fetchEvent(event, context, callback) {
             break;
     }
 
-     var item = null;    
+     let item = null;    
     // Fetch result
      try {
          /* code */            
@@ -38,24 +40,24 @@ async function fetchEvent(event, context, callback) {
         switch (type) {
             case 1:
                 // get events
-            data = json.events;
+            data = await json.events;
                 break;
             case 2:
             // get Births
-                data = json.births;
+                data = await json.births;
                 break;
             case 3:
                 // get deaths
-                data = json.deaths;
+                data = await json.deaths;
                 break;
         
             default:
                 // return events
-                data = json.events;
+                data = await json.events;
                 break;
         }
         // get random item from the result:
-         item = data[Math.floor(Math.random()*data.length)];
+         item = await data[Math.floor(Math.random()*data.length)];
 
 	 return callback(null,  {
 	     statusCode: 200,			     
@@ -77,7 +79,10 @@ async function fetchEvent(event, context, callback) {
 		 'Access-Control-Allow-Origin': '*',
 		 'Access-Control-Allow-Credentials': true,
 	     },	 
-	     body: JSON.stringify({
+	    body: JSON.stringify({
+		success: false,
+		day: day,
+		month: month,
 		 event : null,
 		 type : type
 	     })    
